@@ -1,5 +1,9 @@
 package uz.filegenerationsystemv1
 
+import org.springframework.context.annotation.Bean
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -156,4 +160,24 @@ class UserServiceImpl(
         }
     }
 
+}
+
+
+
+@Service
+class CustomUserDetailsService(private val userRepository: UserRepository) : UserDetailsService {
+
+    override fun loadUserByUsername(username: String): UserDetails {
+        val user = userRepository.findUserByUsernameAndDeletedFalse(username)
+            ?: throw UserNotFoundException()
+
+        return org.springframework.security.core.userdetails.User.builder()
+            .username(user.username)
+            .password(user.password)
+            .authorities("ROLE_" + user.role.name)
+            .build()
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

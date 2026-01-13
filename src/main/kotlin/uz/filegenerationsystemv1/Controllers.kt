@@ -1,5 +1,7 @@
 package uz.filegenerationsystemv1
 
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -8,6 +10,28 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uz.filegenerationsystemv1.security.JwtService
+
+
+@RestController
+@RequestMapping("/auth")
+class AuthController(
+    private val authenticationManager: AuthenticationManager,
+    private val jwtService: JwtService
+) {
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginRequest): Map<String, String> {
+
+        authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(request.username, request.password)
+        )
+
+        val token = jwtService.generateToken(request.username)
+
+        return mapOf("token" to token)
+    }
+}
 
 @RestController
 @RequestMapping("/api/organizations")

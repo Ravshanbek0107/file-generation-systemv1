@@ -2,7 +2,9 @@ package uz.filegenerationsystemv1
 
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.context.support.ResourceBundleMessageSource
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import java.util.Locale
@@ -19,6 +21,12 @@ class ExceptionHandler(
                 return ResponseEntity
                     .badRequest()
                     .body(exception.getErrorMessage(errorMessageSource))
+            }
+
+            is AccessDeniedException, is AuthorizationDeniedException -> {
+                return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN) // 403 status
+                    .body(BaseMessage(403, "Sizda ushbu amalni bajarish uchun ruxsat yo'q!"))
             }
 
             else -> {

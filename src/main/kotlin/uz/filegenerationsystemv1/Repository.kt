@@ -46,4 +46,6 @@ interface OrganizationRepository : BaseRepository<Organization>{
 }
 
 @Repository
-interface UserRepository : BaseRepository<User>{}
+interface UserRepository : BaseRepository<User>{
+    fun findUserByUsernameAndDeletedFalse(username: String) : User?
+}

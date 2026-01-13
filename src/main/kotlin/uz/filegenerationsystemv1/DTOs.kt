@@ -64,3 +64,10 @@ data class UserResponse(
         )
     }
 }
+
+
+
+data class LoginRequest(
+    val username: String,
+    val password: String
+)

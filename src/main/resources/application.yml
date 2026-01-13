@@ -36,6 +36,7 @@ logging:
     org.hibernate.SQL: DEBUG
 
 
-#jwt:
-#  secret:
-#  expiration:
+jwt:
+  secret: Y29tLnByb2plY3QuZmlsZWdlbmVyYXRpb24uc3lzdGVtLnNlY3JldC5rZXkuaGVsbG8=
+  expiration: 86400000
+
